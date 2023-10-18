@@ -1,3 +1,3 @@
 Simple shell project
 
-by your friendly neighbourhood Mahmoud Rehan
+by your friendly neighborhood Mahmoud Rehan
