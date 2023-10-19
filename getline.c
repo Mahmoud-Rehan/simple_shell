@@ -2,50 +2,50 @@
 
 /**
  * _bringline - Assigns the line var.
- * @lineptr: Buffer that store the input.
- * @buffer: Str that is been called to line.
- * @n: Line size.
- * @j: Buffer size.
+ * @buffer_ptr: Buffer that store the input.
+ * @line_size: Str that is been called to line.
+ * @buf: Line size.
+ * @size: Buffer size.
  */
 
-void _bringline(char **lineptr, size_t *n, char *buffer, size_t j)
+void _bringline(char **buffer_ptr, size_t *line_size, char *buf, size_t size)
 {
 
-	if (*lineptr == NULL)
+	if (*buffer_ptr == NULL)
 	{
-		if  (j > BUFSIZE)
-			*n = j;
+		if  (size > BUFFER_SIZE)
+			*line_size = size;
 
 		else
-			*n = BUFSIZE;
+			*line_size = BUFFER_SIZE;
 
-		*lineptr = buffer;
+		*buffer_ptr = buf;
 	}
-	else if (*n < j)
+	else if (*line_size < size)
 	{
-		if (j > BUFSIZE)
-			*n = j;
+		if (size > BUFFER_SIZE)
+			*line_size = size;
 		else
-			*n = BUFSIZE;
+			*line_size = BUFFER_SIZE;
 
-		*lineptr = buffer;
+		*buffer_ptr = buf;
 	}
 	else
 	{
-		string_cpy(*lineptr, buffer);
-		free(buffer);
+		string_cpy(*buffer_ptr, buf);
+		free(buf);
 	}
 }
 
 /**
  * _getline - Read inpt from stream.
- * @lineptr: buffer that stores the input.
- * @n: Lineptr size.
+ * @buffer_ptr: buffer that stores the input.
+ * @size: Lineptr size.
  * @stream: stream to read from.
  * Return: The number of bytes.
  */
 
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
+ssize_t _getline(char **buffer_ptr, size_t *size, FILE *stream)
 {
 	int i;
 	static ssize_t input;
@@ -59,7 +59,7 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 		return (-1);
 
 	input = 0;
-	buffer = malloc(sizeof(char) * BUFSIZE);
+	buffer = malloc(sizeof(char) * BUFFER_SIZE);
 	if (buffer == 0)
 		return (-1);
 	while (t != '\n')
@@ -76,13 +76,13 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 			input++;
 			break;
 		}
-		if (input >= BUFSIZE)
+		if (input >= BUFFER_SIZE)
 			buffer = reallocate(buffer, input, input + 1);
 		buffer[input] = t;
 		input++;
 	}
 	buffer[input] = '\0';
-	_bringline(lineptr, n, buffer, input);
+	_bringline(buffer_ptr, size, buffer, input);
 	retval = input;
 	if (i != 0)
 		input = 0;

@@ -2,17 +2,17 @@
 
 /**
  * environ_check - Checks if the typed var is an env variable.
- * @h:Hhead of list.
- * @in: Input string.
+ * @head: Head of list.
+ * @input: Input string.
  * @data: Data.
  */
 
-void environ_check(r_var **h, char *in, data_shell *data)
+void environ_check(var_t **head, char *input, shell_data *data)
 {
 	int row, chr, j, lval;
 	char **_envr;
 
-	_envr = data->_environ;
+	_envr = data->env;
 
 	for (row = 0; _envr[row]; row++)
 	{
@@ -21,62 +21,63 @@ void environ_check(r_var **h, char *in, data_shell *data)
 			if (_envr[row][chr] == '=')
 			{
 				lval = string_len(_envr[row] + chr + 1);
-				insert_varnode_at_end(h, j, _envr[row] + chr + 1, lval);
+				insert_varnode_at_end(head, j, _envr[row] + chr + 1, lval);
 				return;
 			}
 
-			if (in[j] == _envr[row][chr])
+			if (input[j] == _envr[row][chr])
 				j++;
 			else
 				break;
 		}
 	}
 
-	for (j = 0; in[j]; j++)
+	for (j = 0; input[j]; j++)
 	{
-		if (in[j] == ' ' || in[j] == '\t' || in[j] == ';' || in[j] == '\n')
+		if (input[j] == ' ' || input[j] == '\t' ||
+				input[j] == ';' || input[j] == '\n')
 			break;
 	}
 
-	insert_varnode_at_end(h, j, NULL, 0);
+	insert_varnode_at_end(head, j, NULL, 0);
 }
 
 /**
  * vars_check - Check if the typed variable is $$ or $?
- * @h: head of the list.
- * @in: input string.
- * @st: Last status of the Shell.
+ * @head: Head of the list.
+ * @input: Input string.
+ * @last: Last status of the Shell.
  * @data: Data.
  * Return: Integer.
  */
 
-int vars_check(r_var **h, char *in, char *st, data_shell *data)
+int vars_check(var_t **head, char *input, char *last, shell_data *data)
 {
 	int i, lst, lpd;
 
-	lst = string_len(st);
+	lst = string_len(last);
 	lpd = string_len(data->pid);
 
-	for (i = 0; in[i]; i++)
+	for (i = 0; input[i]; i++)
 	{
-		if (in[i] == '$')
+		if (input[i] == '$')
 		{
-			if (in[i + 1] == '?')
-				insert_varnode_at_end(h, 2, st, lst), i++;
-			else if (in[i + 1] == '$')
-				insert_varnode_at_end(h, 2, data->pid, lpd), i++;
-			else if (in[i + 1] == '\n')
-				insert_varnode_at_end(h, 0, NULL, 0);
-			else if (in[i + 1] == '\0')
-				insert_varnode_at_end(h, 0, NULL, 0);
-			else if (in[i + 1] == ' ')
-				insert_varnode_at_end(h, 0, NULL, 0);
-			else if (in[i + 1] == '\t')
-				insert_varnode_at_end(h, 0, NULL, 0);
-			else if (in[i + 1] == ';')
-				insert_varnode_at_end(h, 0, NULL, 0);
+			if (input[i + 1] == '?')
+				insert_varnode_at_end(head, 2, last, lst), i++;
+			else if (input[i + 1] == '$')
+				insert_varnode_at_end(head, 2, data->pid, lpd), i++;
+			else if (input[i + 1] == '\n')
+				insert_varnode_at_end(head, 0, NULL, 0);
+			else if (input[i + 1] == '\0')
+				insert_varnode_at_end(head, 0, NULL, 0);
+			else if (input[i + 1] == ' ')
+				insert_varnode_at_end(head, 0, NULL, 0);
+			else if (input[i + 1] == '\t')
+				insert_varnode_at_end(head, 0, NULL, 0);
+			else if (input[i + 1] == ';')
+				insert_varnode_at_end(head, 0, NULL, 0);
 			else
-				environ_check(h, in + i, data);
+				environ_check(head, input + i, data);
 		}
 	}
 
@@ -92,9 +93,9 @@ int vars_check(r_var **h, char *in, char *st, data_shell *data)
  * Return: String.
  */
 
-char *replace_input(r_var **head, char *input, char *new_input, int nlen)
+char *replace_input(var_t **head, char *input, char *new_input, int nlen)
 {
-	r_var *indx;
+	var_t *indx;
 	int i, j, k;
 
 	indx = *head;
@@ -103,25 +104,25 @@ char *replace_input(r_var **head, char *input, char *new_input, int nlen)
 	{
 		if (input[j] == '$')
 		{
-			if (!(indx->len_var) && !(indx->len_val))
+			if (!(indx->var_length) && !(indx->val_length))
 			{
 				new_input[i] = input[j];
 				j++;
 			}
-			else if (indx->len_var && !(indx->len_val))
+			else if (indx->var_length && !(indx->val_length))
 			{
-				for (k = 0; k < indx->len_var; k++)
+				for (k = 0; k < indx->var_length; k++)
 					j++;
 				i--;
 			}
 			else
 			{
-				for (k = 0; k < indx->len_val; k++)
+				for (k = 0; k < indx->val_length; k++)
 				{
-					new_input[i] = indx->val[k];
+					new_input[i] = indx->value[k];
 					i++;
 				}
-				j += (indx->len_var);
+				j += (indx->var_length);
 				i--;
 			}
 			indx = indx->next;
@@ -143,20 +144,20 @@ char *replace_input(r_var **head, char *input, char *new_input, int nlen)
  * Return: String.
  */
 
-char *replace_var(char *input, data_shell *datash)
+char *replace_var(char *input_str, shell_data *data)
 {
-	r_var *head, *indx;
+	var_t *head, *indx;
 	char *status, *new_input;
 	int olen, nlen;
 
-	status = _itos(datash->status);
+	status = _itos(data->stat);
 	head = NULL;
-	olen = vars_check(&head, input, status, datash);
+	olen = vars_check(&head, input_str, status, data);
 
 	if (head == NULL)
 	{
 		free(status);
-		return (input);
+		return (input_str);
 	}
 
 	indx = head;
@@ -164,15 +165,15 @@ char *replace_var(char *input, data_shell *datash)
 
 	while (indx != NULL)
 	{
-		nlen += (indx->len_val - indx->len_var);
+		nlen += (indx->val_length - indx->var_length);
 		indx = indx->next;
 	}
 
 	nlen += olen;
 	new_input = malloc(sizeof(char) * (nlen + 1));
 	new_input[nlen] = '\0';
-	new_input = replace_input(&head, input, new_input, nlen);
-	free(input);
+	new_input = replace_input(&head, input_str, new_input, nlen);
+	free(input_str);
 	free(status);
 	free_var_list(&head);
 

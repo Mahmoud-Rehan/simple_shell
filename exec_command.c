@@ -3,25 +3,25 @@
 /**
  * is_current_dir - Checks ":" if is in the current directory.
  * @path: Pointer char.
- * @i: Pointer of index.
+ * @n: Pointer of index.
  * Return: 1 or 0.
  */
 
-int is_current_dir(char *path, int *i)
+int is_current_dir(char *path, int *n)
 {
-	if (path[*i] == ':')
+	if (path[*n] == ':')
 	{
 		return (1);
 	}
 
-	while (path[*i] != ':' && path[*i])
+	while (path[*n] != ':' && path[*n])
 	{
-		*i += 1;
+		*n += 1;
 	}
 
-	if (path[*i])
+	if (path[*n])
 	{
-		*i += 1;
+		*n += 1;
 	}
 
 	return (0);
@@ -29,34 +29,34 @@ int is_current_dir(char *path, int *i)
 
 /**
  * which_cmd - Locates a command.
- * @cmd: Command.
- * @_environ: Environment variable.
+ * @command: Command.
+ * @_env: Environment variable.
  * Return: Command location.
  */
 
-char *which_cmd(char *cmd, char **_environ)
+char *which_cmd(char *command, char **_env)
 {
 	char *path, *ptr_path, *token_path, *dir;
 	int len_dir, len_cmd, i;
 	struct stat st;
 
-	path = _getenviron("PATH", _environ);
+	path = _getenviron("PATH", _env);
 	if (path)
 	{
 		ptr_path = string_dup(path);
-		len_cmd = string_len(cmd);
+		len_cmd = string_len(command);
 		token_path = string_tok(ptr_path, ":");
 		i = 0;
 		while (token_path != NULL)
 		{
 			if (is_current_dir(path, &i))
-				if (stat(cmd, &st) == 0)
-					return (cmd);
+				if (stat(command, &st) == 0)
+					return (command);
 			len_dir = string_len(token_path);
 			dir = malloc(len_dir + len_cmd + 2);
 			string_cpy(dir, token_path);
 			string_cat(dir, "/");
-			string_cat(dir, cmd);
+			string_cat(dir, command);
 			string_cat(dir, "\0");
 			if (stat(dir, &st) == 0)
 			{
@@ -67,30 +67,30 @@ char *which_cmd(char *cmd, char **_environ)
 			token_path = string_tok(NULL, ":");
 		}
 		free(ptr_path);
-		if (stat(cmd, &st) == 0)
-			return (cmd);
+		if (stat(command, &st) == 0)
+			return (command);
 		return (NULL);
 	}
-	if (cmd[0] == '/')
-		if (stat(cmd, &st) == 0)
-			return (cmd);
+	if (command[0] == '/')
+		if (stat(command, &st) == 0)
+			return (command);
 
 	return (NULL);
 }
 
 /**
  * is_exec - Checks if is an executable.
- * @datash: Data.
+ * @data: Data.
  * Return: Integer.
  */
 
-int is_exec(data_shell *datash)
+int is_exec(shell_data *data)
 {
 	struct stat st;
 	int i;
 	char *input;
 
-	input = datash->args[0];
+	input = data->arguments[0];
 
 	for (i = 0; input[i]; i++)
 	{
@@ -123,41 +123,41 @@ int is_exec(data_shell *datash)
 		return (i);
 	}
 
-	_geterror(datash, 127);
+	_geterror(data, 127);
 
 	return (-1);
 }
 
 /**
  * command_error_check - Checks if user has permissions to access.
- * @dir: Destination dir.
- * @datash: Data.
+ * @directory: Destination dir.
+ * @data: Data.
  * Return: 1 or 0.
  */
 
-int command_error_check(char *dir, data_shell *datash)
+int command_error_check(char *directory, shell_data *data)
 {
-	if (dir == NULL)
+	if (directory == NULL)
 	{
-		_geterror(datash, 127);
+		_geterror(data, 127);
 		return (1);
 	}
 
-	if (string_cmp(datash->args[0], dir) != 0)
+	if (string_cmp(data->arguments[0], directory) != 0)
 	{
-		if (access(dir, X_OK) == -1)
+		if (access(directory, X_OK) == -1)
 		{
-			_geterror(datash, 126);
-			free(dir);
+			_geterror(data, 126);
+			free(directory);
 			return (1);
 		}
-		free(dir);
+		free(directory);
 	}
 	else
 	{
-		if (access(datash->args[0], X_OK) == -1)
+		if (access(data->arguments[0], X_OK) == -1)
 		{
-			_geterror(datash, 126);
+			_geterror(data, 126);
 			return (1);
 		}
 	}
@@ -171,7 +171,7 @@ int command_error_check(char *dir, data_shell *datash)
  * Return: 1 if success.
  */
 
-int execute_command(data_shell *datash)
+int execute_command(shell_data *data)
 {
 	pid_t pd;
 	pid_t wpd;
@@ -180,28 +180,28 @@ int execute_command(data_shell *datash)
 	char *dir;
 	(void) wpd;
 
-	exec = is_exec(datash);
+	exec = is_exec(data);
 	if (exec == -1)
 		return (1);
 	if (exec == 0)
 	{
-		dir = which_cmd(datash->args[0], datash->_environ);
-		if (command_error_check(dir, datash) == 1)
+		dir = which_cmd(data->arguments[0], data->env);
+		if (command_error_check(dir, data) == 1)
 			return (1);
 	}
 	pd = fork();
 	if (pd == 0)
 	{
 		if (exec == 0)
-			dir = which_cmd(datash->args[0], datash->_environ);
+			dir = which_cmd(data->arguments[0], data->env);
 		else
-			dir = datash->args[0];
+			dir = data->arguments[0];
 
-		execve(dir + exec, datash->args, datash->_environ);
+		execve(dir + exec, data->arguments, data->env);
 	}
 	else if (pd < 0)
 	{
-		perror(datash->av[0]);
+		perror(data->argv[0]);
 		return (1);
 	}
 	else
@@ -210,7 +210,7 @@ int execute_command(data_shell *datash)
 			wpd = waitpid(pd, &state, WUNTRACED);
 		} while (!WIFEXITED(state) && !WIFSIGNALED(state));
 	}
-	datash->status = state / 256;
+	data->stat = state / 256;
 
 	return (1);
 }

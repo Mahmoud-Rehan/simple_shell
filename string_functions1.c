@@ -2,32 +2,32 @@
 
 /**
  * string_rev - Reverses a string.
- * @s: String.
+ * @str: String.
  */
 
-void string_rev(char *s)
+void string_rev(char *str)
 {
 	int count = 0, i, j;
-	char *str, temp;
+	char *string, temp;
 
 	while (count >= 0)
 	{
-		if (s[count] == '\0')
+		if (str[count] == '\0')
 		{
 			break;
 		}
 		count++;
 	}
 
-	str = s;
+	string = str;
 
 	for (i = 0; i < (count - 1); i++)
 	{
 		for (j = i + 1; j > 0; j--)
 		{
-			temp = *(str + j);
-			*(str + j) = *(str + (j - 1));
-			*(str + (j - 1)) = temp;
+			temp = *(string + j);
+			*(string + j) = *(string + (j - 1));
+			*(string + (j - 1)) = temp;
 		}
 	}
 }

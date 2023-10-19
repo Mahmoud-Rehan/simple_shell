@@ -2,71 +2,73 @@
 
 /**
  * freedata - Frees data.
- * @datash: Data.
+ * @data: Data.
  */
 
-void freedata(data_shell *datash)
+void freedata(shell_data *data)
 {
 	unsigned int i;
 
-	for (i = 0; datash->_environ[i]; i++)
+	for (i = 0; data->env[i]; i++)
 	{
-		free(datash->_environ[i]);
+		free(data->env[i]);
 	}
 
-	free(datash->_environ);
-	free(datash->pid);
+	free(data->env);
+	free(data->pid);
 }
 
 /**
  * setdata - Initialize data.
- * @datash: Data.
- * @av: argument vector.
+ * @data: Data.
+ * @argv: argument vector.
  */
 
-void setdata(data_shell *datash, char **av)
+void setdata(shell_data *data, char **argv)
 {
 	unsigned int i;
 
-	datash->av = av;
-	datash->input = NULL;
-	datash->args = NULL;
-	datash->status = 0;
-	datash->counter = 1;
+	data->argv = argv;
+	data->input = NULL;
+	data->arguments = NULL;
+	data->stat = 0;
+	data->count = 1;
 
 	for (i = 0; environ[i]; i++)
 		;
 
-	datash->_environ = malloc(sizeof(char *) * (i + 1));
+	data->env = malloc(sizeof(char *) * (i + 1));
 
 	for (i = 0; environ[i]; i++)
 	{
-		datash->_environ[i] = string_dup(environ[i]);
+		data->env[i] = string_dup(environ[i]);
 	}
 
-	datash->_environ[i] = NULL;
-	datash->pid = _itos(getpid());
+	data->env[i] = NULL;
+	data->pid = _itos(getpid());
 }
 
 /**
  * main - Main function.
- * @ac: Argument count.
- * @av: Argument vector
+ * @argc: Argument count.
+ * @argv: Argument vector.
  * Return: 0 on success.
  */
 
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-	data_shell datash;
-	(void) ac;
+	shell_data data;
+	(void) argc;
 
 	signal(SIGINT, _getsigint);
-	setdata(&datash, av);
-	loop(&datash);
-	freedata(&datash);
+	setdata(&data, argv);
+	loop(&data);
+	freedata(&data);
 
-	if (datash.status < 0)
+	if (data.stat < 0)
+	{
 		return (255);
+	}
 
-	return (datash.status);
+	return (data.stat);
 }

@@ -2,16 +2,16 @@
 
 /**
  * _readline - Reads the input string.
- * @i_eof: return value of getline.
+ * @return_val: return value of getline.
  * Return: string.
  */
 
-char *_readline(int *i_eof)
+char *_readline(int *return_val)
 {
 	char *input = NULL;
 	size_t bufsize = 0;
 
-	*i_eof = getline(&input, &bufsize, stdin);
+	*return_val = getline(&input, &bufsize, stdin);
 
 	return (input);
 }

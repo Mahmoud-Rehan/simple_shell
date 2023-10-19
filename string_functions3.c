@@ -2,16 +2,16 @@
 
 /**
  * string_dup - Duplicates a str in the heap memory.
- * @s: String.
+ * @str: String.
  * Return: String.
  */
 
-char *string_dup(const char *s)
+char *string_dup(const char *str)
 {
 	char *new;
 	size_t len;
 
-	len = string_len(s);
+	len = string_len(str);
 	new = malloc(sizeof(char) * (len + 1));
 
 	if (new == NULL)
@@ -19,22 +19,22 @@ char *string_dup(const char *s)
 		return (NULL);
 	}
 
-	memory_cpy(new, s, len + 1);
+	memory_cpy(new, str, len + 1);
 
 	return (new);
 }
 
 /**
  * string_len - Gets lenght of a string.
- * @s: String.
+ * @str: String.
  * Return: Integer.
  */
 
-int string_len(const char *s)
+int string_len(const char *str)
 {
 	int len;
 
-	for (len = 0; s[len] != 0; len++)
+	for (len = 0; str[len] != 0; len++)
 	{
 	}
 
@@ -43,20 +43,20 @@ int string_len(const char *s)
 
 /**
  * chars_cmp - Compare chars of strings.
- * @str: String.
+ * @s: String.
  * @delim: Delimiter.
  * Return: 1 if equals or 0 if not.
  */
 
-int chars_cmp(char str[], const char *delim)
+int chars_cmp(char s[], const char *delim)
 {
 	unsigned int i, j, k;
 
-	for (i = 0, k = 0; str[i]; i++)
+	for (i = 0, k = 0; s[i]; i++)
 	{
 		for (j = 0; delim[j]; j++)
 		{
-			if (str[i] == delim[j])
+			if (s[i] == delim[j])
 			{
 				k++;
 				break;
@@ -73,24 +73,24 @@ int chars_cmp(char str[], const char *delim)
 
 /**
  * string_tok - Tokinize a string by a delimiter.
- * @str: String.
+ * @s: String.
  * @delim: Delimiter.
  * Return: String.
  */
 
-char *string_tok(char str[], const char *delim)
+char *string_tok(char s[], const char *delim)
 {
 	static char *splitted, *str_end;
 	char *str_start;
 	unsigned int i, bool;
 
-	if (str != NULL)
+	if (s != NULL)
 	{
-		if (chars_cmp(str, delim))
+		if (chars_cmp(s, delim))
 			return (NULL);
-		splitted = str;
-		i = string_len(str);
-		str_end = &str[i];
+		splitted = s;
+		i = string_len(s);
+		str_end = &s[i];
 	}
 	str_start = splitted;
 
@@ -124,17 +124,17 @@ char *string_tok(char str[], const char *delim)
 
 /**
  * is_digit - Checks if string passed is a number.
- * @s: String.
+ * @str: String.
  * Return: 1 if string is a number or 0 if not.
  */
 
-int is_digit(const char *s)
+int is_digit(const char *str)
 {
 	unsigned int i;
 
-	for (i = 0; s[i]; i++)
+	for (i = 0; str[i]; i++)
 	{
-		if (s[i] < 48 || s[i] > 57)
+		if (str[i] < 48 || str[i] > 57)
 		{
 			return (0);
 		}

@@ -2,11 +2,11 @@
 
 /**
  * _getsigint - Handle the crtl + c call in prompt.
- * @sig: Signal handler.
+ * @signal: Signal handler.
  */
 
-void _getsigint(int sig)
+void _getsigint(int signal)
 {
-	(void)sig;
+	(void)signal;
 	write(STDOUT_FILENO, "\n^-^ ", 5);
 }

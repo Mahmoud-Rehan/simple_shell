@@ -1,33 +1,33 @@
 #include "main.h"
 
 /**
- * insert_varnode_at_end - Insert a variable at the end
- * of a r_var list.
- * @head: Head of the list.
- * @lvar: Length of the variable.
- * @val: value of the variable.
- * @lval: Length of the value.
+ * insert_varnode_at_end - Insert a variable at the end.
+ * @head_ptr: Head of the list.
+ * @var_len: Length of the variable.
+ * @value: value of the variable.
+ * @val_len: Length of the value.
  * Return: Address.
  */
 
-r_var *insert_varnode_at_end(r_var **head, int lvar, char *val, int lval)
+var_t *insert_varnode_at_end(var_t **head_ptr, int var_len,
+		char *value, int val_len)
 {
-	r_var *new, *temp;
+	var_t *new, *temp;
 
-	new = malloc(sizeof(r_var));
+	new = malloc(sizeof(var_t));
 
 	if (new == NULL)
 		return (NULL);
 
-	new->len_var = lvar;
-	new->val = val;
-	new->len_val = lval;
+	new->var_length = var_len;
+	new->value = value;
+	new->val_length = val_len;
 	new->next = NULL;
-	temp = *head;
+	temp = *head_ptr;
 
 	if (temp == NULL)
 	{
-		*head = new;
+		*head_ptr = new;
 	}
 	else
 	{
@@ -37,22 +37,22 @@ r_var *insert_varnode_at_end(r_var **head, int lvar, char *val, int lval)
 		temp->next = new;
 	}
 
-	return (*head);
+	return (*head_ptr);
 }
 
 /**
  * free_var_list - Frees The r_var list.
- * @head: head of the list.
+ * @head_ptr: head of the list.
  */
 
-void free_var_list(r_var **head)
+void free_var_list(var_t **head_ptr)
 {
-	r_var *temp;
-	r_var *curr;
+	var_t *temp;
+	var_t *curr;
 
-	if (head != NULL)
+	if (head_ptr != NULL)
 	{
-		curr = *head;
+		curr = *head_ptr;
 
 		while ((temp = curr) != NULL)
 		{
@@ -60,6 +60,6 @@ void free_var_list(r_var **head)
 			free(temp);
 		}
 
-		*head = NULL;
+		*head_ptr = NULL;
 	}
 }

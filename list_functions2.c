@@ -2,28 +2,27 @@
 
 /**
  * insert_sepnode_at_end - Insert a separator at the end.
- * of a sep_list.
- * @head: Head of the list.
- * @sep: Separator.
+ * @head_ptr: Head of the list.
+ * @sp: Separator.
  * Return: Address.
  */
 
-sep_list *insert_sepnode_at_end(sep_list **head, char sep)
+sep_t *insert_sepnode_at_end(sep_t **head_ptr, char sp)
 {
-	sep_list *new, *temp;
+	sep_t *new, *temp;
 
-	new = malloc(sizeof(sep_list));
+	new = malloc(sizeof(sep_t));
 
 	if (new == NULL)
 		return (NULL);
 
-	new->separator = sep;
+	new->sep = sp;
 	new->next = NULL;
-	temp = *head;
+	temp = *head_ptr;
 
 	if (temp == NULL)
 	{
-		*head = new;
+		*head_ptr = new;
 	}
 	else
 	{
@@ -33,22 +32,22 @@ sep_list *insert_sepnode_at_end(sep_list **head, char sep)
 		temp->next = new;
 	}
 
-	return (*head);
+	return (*head_ptr);
 }
 
 /**
- * free_sep_list - Frees The sep_list.
- * @head: Head of the list.
+ * free_sep_list - Frees The sep_t.
+ * @head_ptr: Head of the list.
  */
 
-void free_sep_list(sep_list **head)
+void free_sep_list(sep_t **head_ptr)
 {
-	sep_list *temp;
-	sep_list *curr;
+	sep_t *temp;
+	sep_t *curr;
 
-	if (head != NULL)
+	if (head_ptr != NULL)
 	{
-		curr = *head;
+		curr = *head_ptr;
 
 		while ((temp = curr) != NULL)
 		{
@@ -56,34 +55,33 @@ void free_sep_list(sep_list **head)
 			free(temp);
 		}
 
-		*head = NULL;
+		*head_ptr = NULL;
 	}
 }
 
 /**
- * insert_cmdlinenode_at_end - Insert a command at the end
- * of a line_list.
- * @head: Head of the list.
- * @line: Command.
+ * insert_cmdnode_at_end - Insert a command at the end.
+ * @head_ptr: Head of the list.
+ * @command: Command.
  * Return: Address.
  */
 
-line_list *insert_cmdnode_at_end(line_list **head, char *line)
+cmdline_t *insert_cmdnode_at_end(cmdline_t **head_ptr, char *command)
 {
-	line_list *new, *temp;
+	cmdline_t *new, *temp;
 
-	new = malloc(sizeof(line_list));
+	new = malloc(sizeof(cmdline_t));
 
 	if (new == NULL)
 		return (NULL);
 
-	new->line = line;
+	new->cmd = command;
 	new->next = NULL;
-	temp = *head;
+	temp = *head_ptr;
 
 	if (temp == NULL)
 	{
-		*head = new;
+		*head_ptr = new;
 	}
 	else
 	{
@@ -93,22 +91,22 @@ line_list *insert_cmdnode_at_end(line_list **head, char *line)
 		temp->next = new;
 	}
 
-	return (*head);
+	return (*head_ptr);
 }
 
 /**
  * free_cmdline_list - Frees The line_list.
- * @head: Head of the list.
+ * @head_ptr: Head of the list.
  */
 
-void free_cmdline_list(line_list **head)
+void free_cmdline_list(cmdline_t **head_ptr)
 {
-	line_list *temp;
-	line_list *curr;
+	cmdline_t *temp;
+	cmdline_t *curr;
 
-	if (head != NULL)
+	if (head_ptr != NULL)
 	{
-		curr = *head;
+		curr = *head_ptr;
 
 		while ((temp = curr) != NULL)
 		{
@@ -116,6 +114,6 @@ void free_cmdline_list(line_list **head)
 			free(temp);
 		}
 
-		*head = NULL;
+		*head_ptr = NULL;
 	}
 }

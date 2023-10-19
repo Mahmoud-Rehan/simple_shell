@@ -2,89 +2,89 @@
 
 /**
  * char_repeated - Counts the repetitions of a char.
- * @input: Input string.
- * @i: Index
+ * @input_str: Input string.
+ * @n: Index
  * Return: Integer.
  */
 
-int char_repeated(char *input, int i)
+int char_repeated(char *input_str, int n)
 {
-	if (*(input - 1) == *input)
+	if (*(input_str - 1) == *input_str)
 	{
-		return (char_repeated(input - 1, i + 1));
+		return (char_repeated(input_str - 1, n + 1));
 	}
 
-	return (i);
+	return (n);
 }
 
 /**
  * sep_error - Finds syntax errors.
- * @input: Input string.
- * @i: Index.
- * @last: Last char read.
+ * @input_str: Input string.
+ * @n: Index.
+ * @c: Last char read.
  * Return: Integer.
  */
 
-int sep_error(char *input, int i, char last)
+int sep_error(char *input_str, int n, char c)
 {
 	int count;
 
 	count = 0;
-	if (*input == '\0')
+	if (*input_str == '\0')
 		return (0);
 
-	if (*input == ' ' || *input == '\t')
-		return (sep_error(input + 1, i + 1, last));
+	if (*input_str == ' ' || *input_str == '\t')
+		return (sep_error(input_str + 1, n + 1, c));
 
-	if (*input == ';')
-		if (last == '|' || last == '&' || last == ';')
-			return (i);
+	if (*input_str == ';')
+		if (c == '|' || c == '&' || c == ';')
+			return (n);
 
-	if (*input == '|')
+	if (*input_str == '|')
 	{
-		if (last == ';' || last == '&')
-			return (i);
+		if (c == ';' || c == '&')
+			return (n);
 
-		if (last == '|')
+		if (c == '|')
 		{
-			count = char_repeated(input, 0);
+			count = char_repeated(input_str, 0);
 			if (count == 0 || count > 1)
-				return (i);
+				return (n);
 		}
 	}
 
-	if (*input == '&')
+	if (*input_str == '&')
 	{
-		if (last == ';' || last == '|')
-			return (i);
+		if (c == ';' || c == '|')
+			return (n);
 
-		if (last == '&')
+		if (c == '&')
 		{
-			count = char_repeated(input, 0);
+			count = char_repeated(input_str, 0);
 
 			if (count == 0 || count > 1)
-				return (i);
+				return (n);
 		}
 	}
-	return (sep_error(input + 1, i + 1, *input));
+	return (sep_error(input_str + 1, n + 1, *input_str));
 }
 
 /**
  * first_char_indx - Finds index of the first char.
- * @input: Input string.
- * @i: Index.
+ * @input_str: Input string.
+ * @n: Index.
  * Return: 1 or 0.
  */
 
-int first_char_indx(char *input, int *i)
+int first_char_indx(char *input_str, int *n)
 {
 
-	for (*i = 0; input[*i]; *i += 1)
+	for (*n = 0; input_str[*n]; *n += 1)
 	{
-		if (input[*i] == ' ' || input[*i] == '\t')
+		if (input_str[*n] == ' ' || input_str[*n] == '\t')
 			continue;
 
-		if (input[*i] == ';' || input[*i] == '|' || input[*i] == '&')
+		if (input_str[*n] == ';' || input_str[*n] == '|' || input_str[*n] == '&')
 			return (-1);
 
 		break;
@@ -95,35 +95,35 @@ int first_char_indx(char *input, int *i)
 
 /**
  * syntax_error_print - Prints when a syntax error.
- * @datash: Data.
- * @input: Input string.
- * @i: Index.
+ * @data: Data.
+ * @input_str: Input string.
+ * @n: Index.
  * @bool: Control message error.
  */
 
-void syntax_error_print(data_shell *datash, char *input, int i, int bool)
+void syntax_error_print(shell_data *data, char *input_str, int n, int bool)
 {
 	char *msg, *msg2, *msg3, *error, *counter;
 	int length;
 
-	if (input[i] == ';')
+	if (input_str[n] == ';')
 	{
 		if (bool == 0)
-			msg = (input[i + 1] == ';' ? ";;" : ";");
+			msg = (input_str[n + 1] == ';' ? ";;" : ";");
 		else
-			msg = (input[i - 1] == ';' ? ";;" : ";");
+			msg = (input_str[n - 1] == ';' ? ";;" : ";");
 	}
 
-	if (input[i] == '|')
-		msg = (input[i + 1] == '|' ? "||" : "|");
+	if (input_str[n] == '|')
+		msg = (input_str[n + 1] == '|' ? "||" : "|");
 
-	if (input[i] == '&')
-		msg = (input[i + 1] == '&' ? "&&" : "&");
+	if (input_str[n] == '&')
+		msg = (input_str[n + 1] == '&' ? "&&" : "&");
 
 	msg2 = ": Syntax error: \"";
 	msg3 = "\" unexpected\n";
-	counter = _itos(datash->counter);
-	length = string_len(datash->av[0]) + string_len(counter);
+	counter = _itos(data->count);
+	length = string_len(data->argv[0]) + string_len(counter);
 	length += string_len(msg) + string_len(msg2) + string_len(msg3) + 2;
 	error = malloc(sizeof(char) * (length + 1));
 
@@ -133,7 +133,7 @@ void syntax_error_print(data_shell *datash, char *input, int i, int bool)
 		return;
 	}
 
-	string_cpy(error, datash->av[0]);
+	string_cpy(error, data->argv[0]);
 	string_cat(error, ": ");
 	string_cat(error, counter);
 	string_cat(error, msg2);
@@ -147,30 +147,30 @@ void syntax_error_print(data_shell *datash, char *input, int i, int bool)
 
 /**
  * syntax_error_check - Find and print a syntax error.
- * @datash: Data.
- * @input: Input string.
+ * @data: Data.
+ * @input_str: Input string.
  * Return: 1 or 0.
  */
 
-int syntax_error_check(data_shell *datash, char *input)
+int syntax_error_check(shell_data *data, char *input_str)
 {
 	int begin = 0;
 	int f_char = 0;
 	int i = 0;
 
-	f_char = first_char_indx(input, &begin);
+	f_char = first_char_indx(input_str, &begin);
 
 	if (f_char == -1)
 	{
-		syntax_error_print(datash, input, begin, 0);
+		syntax_error_print(data, input_str, begin, 0);
 		return (1);
 	}
 
-	i = sep_error(input + begin, 0, *(input + begin));
+	i = sep_error(input_str + begin, 0, *(input_str + begin));
 
 	if (i != 0)
 	{
-		syntax_error_print(datash, input, begin + i, 1);
+		syntax_error_print(data, input_str, begin + i, 1);
 		return (1);
 	}
 

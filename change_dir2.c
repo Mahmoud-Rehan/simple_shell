@@ -2,16 +2,16 @@
 
 /**
  * cd_current - Cd to the current directory.
- * @datash: Data.
+ * @data: Data.
  * Return: 1 if success.
  */
 
-int cd_current(data_shell *datash)
+int cd_current(shell_data *data)
 {
 	char *dir;
 	int ishome, ishome2, isddash;
 
-	dir = datash->args[1];
+	dir = data->arguments[1];
 
 	if (dir != NULL)
 	{
@@ -22,23 +22,23 @@ int cd_current(data_shell *datash)
 
 	if (dir == NULL || !ishome || !ishome2 || !isddash)
 	{
-		cd_home(datash);
+		cd_home(data);
 		return (1);
 	}
 
 	if (string_cmp("-", dir) == 0)
 	{
-		cd_prev(datash);
+		cd_prev(data);
 		return (1);
 	}
 
 	if (string_cmp(".", dir) == 0 || string_cmp("..", dir) == 0)
 	{
-		cd_parent(datash);
+		cd_parent(data);
 		return (1);
 	}
 
-	change_dir(datash);
+	change_dir(data);
 
 	return (1);
 }

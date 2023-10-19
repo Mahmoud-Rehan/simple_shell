@@ -2,18 +2,18 @@
 
 /**
  * memory_cpy - Copies information between void pointers.
- * @newptr: Dest pointer.
- * @ptr: Src pointer.
- * @size: Size of the new pointer.
+ * @newp: Dest pointer.
+ * @p: Src pointer.
+ * @ptr_size: Size of the new pointer.
  */
 
-void memory_cpy(void *newptr, const void *ptr, unsigned int size)
+void memory_cpy(void *newp, const void *p, unsigned int ptr_size)
 {
-	char *char_ptr = (char *)ptr;
-	char *char_newptr = (char *)newptr;
+	char *char_ptr = (char *)p;
+	char *char_newptr = (char *)newp;
 	unsigned int i;
 
-	for (i = 0; i < size; i++)
+	for (i = 0; i < ptr_size; i++)
 	{
 		char_newptr[i] = char_ptr[i];
 	}
@@ -21,71 +21,71 @@ void memory_cpy(void *newptr, const void *ptr, unsigned int size)
 
 /**
  * reallocate - Reallocates a memory block.
- * @ptr: Pointer to the previously allocated memory.
- * @old_size: Size of the allocated space of ptr.
- * @new_size: New size of the new memory block.
+ * @p: Pointer to the previously allocated memory.
+ * @size: Size of the allocated space of ptr.
+ * @newsize: New size of the new memory block.
  * Return: Void ptr.
  */
 
-void *reallocate(void *ptr, unsigned int old_size, unsigned int new_size)
+void *reallocate(void *p, unsigned int size, unsigned int newsize)
 {
 	void *newptr;
 
-	if (ptr == NULL)
-		return (malloc(new_size));
+	if (p == NULL)
+		return (malloc(newsize));
 
-	if (new_size == 0)
+	if (newsize == 0)
 	{
-		free(ptr);
+		free(p);
 		return (NULL);
 	}
 
-	if (new_size == old_size)
-		return (ptr);
+	if (newsize == size)
+		return (p);
 
-	newptr = malloc(new_size);
+	newptr = malloc(newsize);
 
 	if (newptr == NULL)
 		return (NULL);
 
-	if (new_size < old_size)
-		memory_cpy(newptr, ptr, new_size);
+	if (newsize < size)
+		memory_cpy(newptr, p, newsize);
 	else
-		memory_cpy(newptr, ptr, old_size);
+		memory_cpy(newptr, p, size);
 
-	free(ptr);
+	free(p);
 
 	return (newptr);
 }
 
 /**
  * realloc_dptr - Reallocates a memory block of a double pointer.
- * @ptr: Double pointer to the previously allocated memory.
- * @old_size: Size of the allocated space of ptr.
- * @new_size: New size of the new memory block.
+ * @p: Double pointer to the previously allocated memory.
+ * @size: Size of the allocated space of ptr.
+ * @newsize: New size of the new memory block.
  * Return: Ptr.
  */
 
-char **realloc_dptr(char **ptr, unsigned int old_size, unsigned int new_size)
+char **realloc_dptr(char **p, unsigned int size, unsigned int newsize)
 {
 	char **newptr;
 	unsigned int i;
 
-	if (ptr == NULL)
-		return (malloc(sizeof(char *) * new_size));
+	if (p == NULL)
+		return (malloc(sizeof(char *) * newsize));
 
-	if (new_size == old_size)
-		return (ptr);
+	if (newsize == size)
+		return (p);
 
-	newptr = malloc(sizeof(char *) * new_size);
+	newptr = malloc(sizeof(char *) * newsize);
 
 	if (newptr == NULL)
 		return (NULL);
 
-	for (i = 0; i < old_size; i++)
-		newptr[i] = ptr[i];
+	for (i = 0; i < size; i++)
+		newptr[i] = p[i];
 
-	free(ptr);
+	free(p);
 
 	return (newptr);
 }

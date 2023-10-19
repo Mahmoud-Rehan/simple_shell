@@ -2,31 +2,31 @@
 
 /**
  * _geterror - Calls the error according the builtin.
- * @datash: Data.
- * @eval: Error value.
+ * @data: Data.
+ * @error_val: Error value.
  * Return: Integer.
  */
 
-int _geterror(data_shell *datash, int eval)
+int _geterror(shell_data *data, int error_val)
 {
 	char *error;
 
-	switch (eval)
+	switch (error_val)
 	{
 	case -1:
-		error = environ_error(datash);
+		error = environ_error(data);
 		break;
 	case 126:
-		error = path_error(datash);
+		error = path_error(data);
 		break;
 	case 127:
-		error = not_found_error(datash);
+		error = not_found_error(data);
 		break;
 	case 2:
-		if (string_cmp("exit", datash->args[0]) == 0)
-			error = exit_error(datash);
-		else if (string_cmp("cd", datash->args[0]) == 0)
-			error = get_error_cd(datash);
+		if (string_cmp("exit", data->arguments[0]) == 0)
+			error = exit_error(data);
+		else if (string_cmp("cd", data->arguments[0]) == 0)
+			error = get_error_cd(data);
 		break;
 	}
 
@@ -35,7 +35,7 @@ int _geterror(data_shell *datash, int eval)
 		write(STDERR_FILENO, error, string_len(error));
 		free(error);
 	}
-	datash->status = eval;
+	data->stat = error_val;
 
-	return (eval);
+	return (error_val);
 }

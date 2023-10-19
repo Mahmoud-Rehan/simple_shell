@@ -2,23 +2,23 @@
 
 /**
  * _getlen - Get the lenght of a number.
- * @n: Number.
+ * @num: Number.
  * Return: Integer.
  */
 
-int _getlen(int n)
+int _getlen(int num)
 {
 	unsigned int n1;
 	int lenght = 1;
 
-	if (n < 0)
+	if (num < 0)
 	{
 		lenght++;
-		n1 = n * -1;
+		n1 = num * -1;
 	}
 	else
 	{
-		n1 = n;
+		n1 = num;
 	}
 
 	while (n1 > 9)
@@ -32,14 +32,14 @@ int _getlen(int n)
 
 /**
  * _itos - Converts int to string.
- * @n: Number
+ * @num: Number
  * Return: String.
  */
 
-char *_itos(int n)
+char *_itos(int num)
 {
 	unsigned int n1;
-	int lenght = _getlen(n);
+	int lenght = _getlen(num);
 	char *buffer;
 
 	buffer = malloc(sizeof(char) * (lenght + 1));
@@ -49,14 +49,14 @@ char *_itos(int n)
 
 	*(buffer + lenght) = '\0';
 
-	if (n < 0)
+	if (num < 0)
 	{
-		n1 = n * -1;
+		n1 = num * -1;
 		buffer[0] = '-';
 	}
 	else
 	{
-		n1 = n;
+		n1 = num;
 	}
 
 	lenght--;
@@ -74,23 +74,23 @@ char *_itos(int n)
 
 /**
  * _stoi - Converts a string to an integer.
- * @s: String.
+ * @str: String.
  * Return: Integer.
  */
 
-int _stoi(char *s)
+int _stoi(char *str)
 {
 	unsigned int count = 0, size = 0, oi = 0, pn = 1, m = 1, i;
 
-	while (*(s + count) != '\0')
+	while (*(str + count) != '\0')
 	{
-		if (size > 0 && (*(s + count) < '0' || *(s + count) > '9'))
+		if (size > 0 && (*(str + count) < '0' || *(str + count) > '9'))
 			break;
 
-		if (*(s + count) == '-')
+		if (*(str + count) == '-')
 			pn *= -1;
 
-		if ((*(s + count) >= '0') && (*(s + count) <= '9'))
+		if ((*(str + count) >= '0') && (*(str + count) <= '9'))
 		{
 			if (size > 0)
 				m *= 10;
@@ -102,7 +102,7 @@ int _stoi(char *s)
 
 	for (i = count - size; i < count; i++)
 	{
-		oi = oi + ((*(s + i) - 48) * m);
+		oi = oi + ((*(str + i) - 48) * m);
 		m /= 10;
 	}
 

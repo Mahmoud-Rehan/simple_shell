@@ -2,21 +2,21 @@
 
 /**
  * execute_line - Finds builtins and commands.
- * @datash: Data.
+ * @data: Data.
  * Return: 1 on success.
  */
 
-int execute_line(data_shell *datash)
+int execute_line(shell_data *data)
 {
-	int (*builtin)(data_shell *datash);
+	int (*builtin)(shell_data *data);
 
-	if (datash->args[0] == NULL)
+	if (data->arguments[0] == NULL)
 		return (1);
 
-	builtin = _getbuiltin(datash->args[0]);
+	builtin = _getbuiltin(data->arguments[0]);
 
 	if (builtin != NULL)
-		return (builtin(datash));
+		return (builtin(data));
 
-	return (execute_command(datash));
+	return (execute_command(data));
 }
