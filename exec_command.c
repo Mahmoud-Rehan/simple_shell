@@ -167,7 +167,7 @@ int command_error_check(char *directory, shell_data *data)
 
 /**
  * execute_command - Executes command.
- * @datash: Data.
+ * @data: Data.
  * Return: 1 if success.
  */
 
