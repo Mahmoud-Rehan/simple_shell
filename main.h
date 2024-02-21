@@ -83,7 +83,7 @@ typedef struct var_list
 } var_t;
 
 /**
- * struct builtins_list - Builtin struct for command args.
+ * struct builtin_list - Builtin struct for command args.
  * @name: The name of the command builtin i.e cd, exit, env.
  * @function: data type pointer function.
  */
@@ -102,7 +102,8 @@ cmdline_t *insert_cmdnode_at_end(cmdline_t **head_ptr, char *command);
 void free_cmdline_list(cmdline_t **head_ptr);
 
 /* list_functions1.c */
-var_t *insert_varnode_at_end(var_t **head_ptr, int var_len, char *value, int val_len);
+var_t *insert_varnode_at_end
+(var_t **head_ptr, int var_len, char *value, int val_len);
 void free_var_list(var_t **head_ptr);
 
 /* strig_functions2.c */
@@ -210,7 +211,7 @@ char *error_get_alias(char **args);
 char *environ_error(shell_data *data);
 char *error_syntax(char **args);
 char *error_permission(char **args);
-char *path_error(shell_data*data);
+char *path_error(shell_data *data);
 
 
 /* error.c */
