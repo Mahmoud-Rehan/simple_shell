@@ -139,8 +139,8 @@ char *replace_input(var_t **head, char *input, char *new_input, int nlen)
 
 /**
  * replace_var - Calls functions to replace string into vars.
- * @input: Input string.
- * @datash: Data.
+ * @input_str: Input string.
+ * @data: Data.
  * Return: String.
  */
 
